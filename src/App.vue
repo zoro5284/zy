@@ -2,33 +2,36 @@
   <div class="container">
     <GlobalHeader :user="curUser" />
     <!-- <ColumnList :list="list"/> -->
-    <form action="">
-      <div class="mb-3">
-        <label class="form-label">邮箱地址</label>
-        <ValidateInput :rules="rules" succ-msg="that's right" />
-      </div>
-    </form>
+    <ValidateForm @form-submit="handleFormSubmit">
+      <label class="form-label">邮箱地址</label>
+      <ValidateInput :rules="emailRules" v-model="emailVal" succ-msg="that's right" placeholder="请输入邮箱地址" />
+      <label class="form-label">密码</label>
+      <ValidateInput :rules="pwdRules" v-model="pwdVal" succ-msg="that's right" placeholder="请输入密码" />
+    </ValidateForm>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import ColumnList, { ColumnProps } from './components/ColumnList.vue'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
 import ValidateInput, { RulesProps } from './components/ValidateInput.vue'
+import ValidateForm from './components/ValidateForm.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 export default defineComponent({
   name: 'App',
   components: {
     // ColumnList,
     GlobalHeader,
-    ValidateInput
+    ValidateInput,
+    ValidateForm
   },
   setup () {
     const curUser:UserProps = {
       isLogin: true,
       name: 'Jzy'
     }
+
     const testData: ColumnProps[] = [
       {
         id: 1,
@@ -49,7 +52,7 @@ export default defineComponent({
         avatar: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2Fee62958a35ed65a39b55179cd4939a27e71f2f47.jpg&refer=http%3A%2F%2Fi0.hdslb.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1657760368&t=83ba8b4dc4ad4a4601282fec3088f6b0'
       }
     ]
-    const rules: RulesProps = [
+    const emailRules: RulesProps = [
       {
         type: 'required',
         errMsg: '请输入邮箱'
@@ -59,10 +62,29 @@ export default defineComponent({
         errMsg: '请确认邮箱格式'
       }
     ]
+    const pwdRules: RulesProps = [
+      {
+        type: 'required',
+        errMsg: '请输入密码'
+      },
+      {
+        type: 'pwd',
+        errMsg: '请确认密码格式'
+      }
+    ]
+    const emailVal = ref('')
+    const pwdVal = ref('')
+    const handleFormSubmit = (result: boolean) => {
+      console.log('result', result)
+    }
     return {
       list: testData,
       curUser,
-      rules
+      emailRules,
+      pwdRules,
+      emailVal,
+      pwdVal,
+      handleFormSubmit
     }
   }
 })
